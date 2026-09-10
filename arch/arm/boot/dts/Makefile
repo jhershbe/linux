@@ -1028,6 +1028,7 @@ dtb-$(CONFIG_ARCH_ZYNQ) += \
 	ni-77D4.dtb \
 	ni-77D5.dtb \
 	ni-77D6.dtb \
+	ni-77DE.dtb \
 	ni-7885.dtb \
 	ni-793C.dtb \
 	ni-7AAE.dtb
