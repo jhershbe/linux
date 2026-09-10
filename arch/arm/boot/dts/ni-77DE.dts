@@ -1,0 +1,89 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Device tree for the NI VirtualBench VB-8034 (device code 0x77DE).
+ *
+ * Forward-port of the legacy virtualbench/20.0/3.2 ni-vb80x4.dts onto the
+ * mainline NILRT ni-zynq.dtsi bindings. Wireless (the wl12xx on sdhci@e0100000)
+ * is intentionally omitted -- it is out of scope for the NILE VB-8034 image.
+ *
+ * Copyright (C) 2013-2026 National Instruments
+ */
+
+/dts-v1/;
+/include/ "ni-zynq.dtsi"
+
+/ {
+	model = "NI VB-8034";
+	compatible = "ni,zynq", "xlnx,zynq-7000";
+};
+
+/* PS UART0 -> ttyPS0, the console the FIT bootscript selects (console=ttyPS0). */
+&uart0 {
+	status = "okay";
+};
+
+/* Gigabit Ethernet via the on-board Marvell 88E1512 PHY. */
+&gem0 {
+	status = "okay";
+	phy-handle = <&phy0>;
+	phy-mode = "rgmii-id";
+	#address-cells = <0x1>;
+	#size-cells = <0x0>;
+
+	phy0: phy@0 {
+		compatible = "marvell,88e1512", "ethernet-phy-ieee802.3-c22";
+		device_type = "ethernet-phy";
+		reg = <0x0>;
+		/*
+		 * Legacy LED config (page 3, regs 16-18 = LED Function,
+		 * Polarity, Timer), preserved from ni-vb-2.dtsi's
+		 * leds = <0x1177 0x15 0x4900>.
+		 */
+		marvell,reg-init = <3 16 0 0x1177>,
+				   <3 17 0 0x0015>,
+				   <3 18 0 0x4900>;
+	};
+};
+
+/* USB0 in peripheral mode for the LCI (g_lci) USB gadget. */
+&usb0 {
+	status = "okay";
+	dr_mode = "peripheral";
+};
+
+/*
+ * VB-8034 has no I2C CPLD (unlike the cRIO/sbRIO targets ni-zynq.dtsi targets),
+ * so keep i2c0/nicpld off to avoid probing a device that isn't there.
+ */
+&i2c0 {
+	status = "disabled";
+};
+
+/*
+ * Raw-NAND partition map the fixed on-device U-Boot, the field updater, and the
+ * UBI bindings (ubi.mtd=boot-config, ubi.mtd=root) all expect. Must match the
+ * legacy layout exactly.
+ */
+&{/amba@0/smcc@e000e000/nand@e1000000} {
+	partition@0 {
+		label = "fsbl";
+		reg = <0x0 0x20000>;
+		read-only;
+	};
+
+	partition@1 {
+		label = "u-boot";
+		reg = <0x20000 0x80000>;
+		read-only;
+	};
+
+	partition@2 {
+		label = "boot-config";
+		reg = <0xa0000 0x2800000>;
+	};
+
+	partition@3 {
+		label = "root";
+		reg = <0x28a0000 0xd760000>;
+	};
+};
