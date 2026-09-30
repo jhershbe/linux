@@ -21,7 +21,7 @@ $(obj)/file2alias.o: $(obj)/$(devicetable-offsets-file)
 quiet_cmd_elfconfig = MKELF   $@
       cmd_elfconfig = $(obj)/mk_elfconfig < $< > $@
 
-ifneq ($(CROSS_COMPILE),)
+ifneq ($(NILRT_ONTARGET_TOOLS),)
 TGTPRE := $(notdir $(CROSS_COMPILE))
 tgtmodpost	:= $(TGTPRE)modpost
 
