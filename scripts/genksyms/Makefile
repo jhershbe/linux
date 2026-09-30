@@ -5,7 +5,7 @@ always		:= $(hostprogs-y)
 
 genksyms-objs	:= genksyms.o parse.tab.o lex.lex.o
 
-ifneq ($(strip $(CROSS_COMPILE)),)
+ifneq ($(NILRT_ONTARGET_TOOLS),)
 TGTPRE		:= $(notdir $(CROSS_COMPILE))
 tgtgenksyms	:= $(TGTPRE)genksyms
 
