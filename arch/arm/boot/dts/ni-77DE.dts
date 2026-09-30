@@ -88,6 +88,11 @@
 	};
 };
 
+/* The LCI daemon pets the SWDT; a missed pet must reset the board. */
+&watchdog0 {
+	reset-on-timeout;
+};
+
 /* USB0 in peripheral mode for the LCI (g_lci) USB gadget. */
 &usb0 {
 	status = "okay";
