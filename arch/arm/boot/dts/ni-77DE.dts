@@ -75,6 +75,19 @@
 	fclk-enable = <0xf>;
 };
 
+/*
+ * LCI FPGA, driven from userspace through uio_lci. The daemon reads this
+ * node's reg from /proc/device-tree/amba@0/lcifpga@40000000/reg: FPGA
+ * registers, then the DMA buffer region above the RAM U-Boot gives Linux.
+ */
+&amba {
+	lcifpga@40000000 {
+		compatible = "ni,lci-1.00.a";
+		reg = <0x40000000 0x140000 0x0d600000 0x2a00000>;
+		interrupts = <0 29 4>;
+	};
+};
+
 /* USB0 in peripheral mode for the LCI (g_lci) USB gadget. */
 &usb0 {
 	status = "okay";
